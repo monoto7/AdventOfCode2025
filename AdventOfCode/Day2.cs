@@ -12,6 +12,8 @@ namespace AdventOfCode2025
         public static Int64 countPart2 = 0;
         public static void SelectInput()
         {
+            countPart1 = 0;
+            countPart2 = 0;
             Console.WriteLine("Select input, 1:Example, 2:Main, otherwise return");
             String[] input = { };
             switch (Console.ReadLine())
@@ -49,7 +51,6 @@ namespace AdventOfCode2025
                 }
             }
         }
-
         public static void checkN(string input)
         {
             //Checks multiples for any length
