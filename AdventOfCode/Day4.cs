@@ -61,7 +61,7 @@ namespace AdventOfCode2025
             Console.WriteLine();
             Console.WriteLine("total part 1: " + total);
 
-            checkAdjacentRepeating(charGrid);
+            checkAdjacentRepeatingFast(charGrid);
             total = 0;
             for (int i = 0; i < xSize; i++)
             {
@@ -104,6 +104,72 @@ namespace AdventOfCode2025
             }
         }
 
+        public static void checkAdjacentRepeatingFast(char[,] chargrid)
+        {
+            //optmizied implementation of above
+                int total = 0;
+                int[,] intGrid = new int[xSize, ySize];
+                checkAdjacent(chargrid, intGrid);
+
+                for (int i = 0; i < xSize; i++)
+                {
+                    for (int j = 0; j < ySize; j++)
+                    {
+                        if (intGrid[i, j] < 4 && chargrid[i, j] == '@')
+                        {
+                            chargrid[i, j] = 'x';
+                        setAdjacentNegative(i, j, intGrid, chargrid);
+                        }
+                    }
+                }
+        }
+
+        public static void setNeighbor(int x, int y, int[,] intgrid, char[,] chargrid)
+        {
+            intgrid[x, y] -= 1;
+            if (chargrid[x, y] == '@' && intgrid[x, y] < 4)
+            {
+                chargrid[x, y] = 'x';
+                setAdjacentNegative(x, y, intgrid, chargrid);
+            }
+        }
+        public static void setAdjacentNegative(int x, int y, int[,] intgrid, char[,] chargrid)
+        {
+            if (x - 1 >= 0)
+            {
+                setNeighbor(x - 1, y, intgrid, chargrid);
+                if (y - 1 >= 0)
+                {
+                    setNeighbor(x - 1, y-1, intgrid, chargrid);
+                }
+                if (y + 1 < ySize)
+                {
+                    setNeighbor(x - 1, y + 1, intgrid, chargrid);
+                }
+            }
+            if (y - 1 >= 0)
+            {
+                setNeighbor(x, y - 1, intgrid, chargrid);
+            }
+            if (x + 1 < xSize)
+            {
+                setNeighbor(x + 1, y , intgrid, chargrid);
+                if (y - 1 >= 0)
+                {
+                    setNeighbor(x + 1, y - 1, intgrid, chargrid);
+                }
+                if (y + 1 < ySize)
+                {
+                    setNeighbor(x + 1, y + 1, intgrid, chargrid);
+                }
+            }
+            if (y + 1 < ySize)
+            {
+                setNeighbor(x, y + 1, intgrid, chargrid);
+            }
+
+
+        }
 
         public static void checkAdjacent(char[,] chargrid, int[,] intgrid)
         {
