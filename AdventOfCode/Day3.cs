@@ -50,7 +50,6 @@ namespace AdventOfCode2025
                 }
                 while (iterator < integers.Length)
                 {
-                    
                     if (parsed > integers[iterator])
                     {
                         integers[iterator] = parsed;
