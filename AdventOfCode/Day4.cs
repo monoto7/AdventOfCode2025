@@ -107,21 +107,21 @@ namespace AdventOfCode2025
         public static void checkAdjacentRepeatingFast(char[,] chargrid)
         {
             //optmizied implementation of above
-                int total = 0;
-                int[,] intGrid = new int[xSize, ySize];
-                checkAdjacent(chargrid, intGrid);
+            int total = 0;
+            int[,] intGrid = new int[xSize, ySize];
+            checkAdjacent(chargrid, intGrid);
 
-                for (int i = 0; i < xSize; i++)
+            for (int i = 0; i < xSize; i++)
+            {
+                for (int j = 0; j < ySize; j++)
                 {
-                    for (int j = 0; j < ySize; j++)
+                    if (intGrid[i, j] < 4 && chargrid[i, j] == '@')
                     {
-                        if (intGrid[i, j] < 4 && chargrid[i, j] == '@')
-                        {
-                            chargrid[i, j] = 'x';
+                        chargrid[i, j] = 'x';
                         setAdjacentNegative(i, j, intGrid, chargrid);
-                        }
                     }
                 }
+            }
         }
 
         public static void setNeighbor(int x, int y, int[,] intgrid, char[,] chargrid)
