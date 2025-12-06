@@ -28,6 +28,9 @@ namespace AdventOfCode2025
                     case "5":
                         Day5.SelectInput();
                         break;
+                    case "6":
+                        Day6.SelectInput();
+                        break;
                     default:
                         continueRunning = false;
                         break;
