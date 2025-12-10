@@ -40,6 +40,9 @@ namespace AdventOfCode2025
                     case "9":
                         Day9.SelectInput();
                         break;
+                    case "10":
+                        Day10.SelectInput();
+                        break;
                     default:
                         continueRunning = false;
                         break;
