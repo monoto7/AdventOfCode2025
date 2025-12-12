@@ -10,7 +10,7 @@ namespace AdventOfCode2025
             bool continueRunning = true;
             while (continueRunning)
             {
-                Console.WriteLine("Select Day, available are: 1, 2, 3, 4, 5, 6, 7, 8, 9; otherwise close");
+                Console.WriteLine("Select Day, available are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11; otherwise close");
                 switch (Console.ReadLine())
                 {
                     case "1":
@@ -42,6 +42,9 @@ namespace AdventOfCode2025
                         break;
                     case "10":
                         Day10.SelectInput();
+                        break;
+                    case "11":
+                        Day11.SelectInput();
                         break;
                     default:
                         continueRunning = false;
