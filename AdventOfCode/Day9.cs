@@ -31,21 +31,63 @@ namespace AdventOfCode2025
 
             maxX = 0;
             maxY = 0;
+
+            SortedList<Int64, List<Coordinate>> xValues = new SortedList<long, List<Coordinate>>();
+            SortedList<Int64, List<Coordinate>> yValues = new SortedList<long, List<Coordinate>>();
+
+
             foreach (String line in input)
             {
                 string[] split = line.Split(',');
                 Coordinate coordinate = new Coordinate();
                 coordinate.x = Int64.Parse(split[0]);
-                if (coordinate.x > maxX) maxX = coordinate.x + 2;
+
+                if (!xValues.ContainsKey(coordinate.x))
+                {
+                    xValues.Add(coordinate.x, new List<Coordinate>());
+                }
+                xValues[coordinate.x].Add(coordinate);
+
                 coordinate.y = Int64.Parse(split[1]);
-                if (coordinate.y > maxY) maxY = coordinate.y + 2;
+
+                if (!yValues.ContainsKey(coordinate.y))
+                {
+                    yValues.Add(coordinate.y, new List<Coordinate>());
+                }
+                yValues[coordinate.y].Add(coordinate);
+
                 coordinates.Add(coordinate);
             }
+
+            maxX = xValues.Count + 2;
+
+            maxY = yValues.Count + 2;
+
+            int x = 1;
+            foreach(Int64 key in xValues.Keys)
+            {
+                foreach(Coordinate coordinate in xValues[key])
+                {
+                    coordinate.tempx = x;
+                }
+                x++;
+            }
+            int y = 1;
+            foreach (Int64 key in yValues.Keys)
+            {
+                foreach (Coordinate coordinate in yValues[key])
+                {
+                    coordinate.tempy = y;
+                }
+                y++;
+            }
+
             getLargest(coordinates);
+
 
             
             //got bored with trying to figure out part 2.
-            //getLargestAndCheck(coordinates, makeMap(coordinates));
+            getLargestAndCheck(coordinates, makeMap(coordinates));
         }
 
         static void getLargest(List<Coordinate> coordinates)
@@ -71,52 +113,44 @@ namespace AdventOfCode2025
                 {
                     if (checkContained(coordinate, coordinate2, chars))
                     {
-                        Int64 area = Math.Abs((coordinate.x - coordinate2.x + 1) * (coordinate.y - coordinate2.y + 1));
+                        Int64 area = ((Math.Abs(coordinate.x - coordinate2.x) + 1) * (Math.Abs(coordinate.y - coordinate2.y) + 1));
                         areas.Add(area);
+                        
+                    }
+                    else
+                    {
+                        Int64 area = Math.Abs((coordinate.x - coordinate2.x + 1) * (coordinate.y - coordinate2.y + 1));
+                        
                     }
                 }
             }
             Console.WriteLine(areas.Last());
+            
         }
 
         static bool checkContained(Coordinate coordinate1, Coordinate coordinate2, char[][] chars)
         {
-            Int64 x = coordinate1.x - coordinate2.x;
-            bool leftx = false;
-            
-            x *= -1;
-            while (x != 0)
+            int x = coordinate1.tempx < coordinate2.tempx ? coordinate1.tempx : coordinate2.tempx;
+            int y = coordinate1.tempy < coordinate2.tempy ? coordinate1.tempy : coordinate2.tempy;
+            int xDif = Math.Abs(coordinate1.tempx - coordinate2.tempx);
+           
+
+            while(xDif != -1)
             {
-                Int64 y = coordinate1.y - coordinate2.y;
-                y *= -1;
-                bool lefty = false;
-                if (chars[coordinate1.x + x][coordinate1.y + y] == '@' || chars[coordinate1.x + x][coordinate1.y + y] == 'X')
+                int yDif = Math.Abs(coordinate1.tempy - coordinate2.tempy);
+                while (yDif!= -1)
                 {
-                    if (leftx)
+                    if (chars[x + xDif][y + yDif] == '-')
                     {
                         return false;
                     }
+                    yDif--;
                 }
-                {
-                    leftx = true;
-                }
-                while (y != 0)
-                {
-                    if (chars[coordinate1.x + x][coordinate1.y + y] == '@' || chars[coordinate1.x + x][coordinate1.y + y] == 'X')
-                    {
-                        if (lefty)
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        lefty = true;
-                    }
-                    y = y > 0 ? y - 1 : y < 0 ? y + 1 : y;
-                }
-                x = x > 0 ? x - 1 : x < 0 ? x + 1 : x;
+                xDif--;
             }
+
+
+
             return true;
             
         }
@@ -135,12 +169,12 @@ namespace AdventOfCode2025
             (Int64, Int64) curPos = (-1, -1);
             foreach(Coordinate c in coordinates)
             {
-                chars[c.x][c.y] = '@';
+                chars[c.tempx][c.tempy] = '@';
                 if (curPos != (-1, -1))
                 {
 
-                    Int64 i1 =  c.x - curPos.Item1;
-                    Int64 i2 =  c.y - curPos.Item2;
+                    Int64 i1 =  c.tempx - curPos.Item1;
+                    Int64 i2 =  c.tempy - curPos.Item2;
                     while (i1 != 0 || i2 != 0)
                     {
                         if (chars[curPos.Item1 + i1][ curPos.Item2 + i2] != '@')
@@ -152,7 +186,7 @@ namespace AdventOfCode2025
                     }
 
                 }
-                curPos = (c.x, c.y);
+                curPos = (c.tempx, c.tempy);
             }
             for (int i = 0; i < maxX; i++)
             {
@@ -165,7 +199,7 @@ namespace AdventOfCode2025
                 }
             }
             Console.WriteLine("Map Made");
-            //CheckSeed(chars);
+            CheckSeed(chars);
             return chars;
         }
 
@@ -176,6 +210,7 @@ namespace AdventOfCode2025
             {
                 FillMapScan(chars, seedpositions[0]);
             }
+            
         }
         static void FillMapScan(char[][] chars, (Int64, Int64) curpos)
         {
@@ -233,9 +268,10 @@ namespace AdventOfCode2025
         }
         
 
-        struct Coordinate()
+        class Coordinate()
         {
            public Int64 x, y;
+           public int tempx, tempy;
         }
     }
 }
